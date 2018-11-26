@@ -33,7 +33,7 @@ class Field
     private $shipCellsLeft;
 
     /**
-     * Обнуляет поле, выставляя всем ячейкам значение "пусто"
+     * Reset game field, set all cells to empty value
      */
     public function reset() : void
     {
@@ -44,7 +44,7 @@ class Field
     }
 
     /**
-     * Заполняет игровое поле кораблями
+     * Fill game field with ships
      */
     public function generateShips() : void
     {
@@ -114,7 +114,7 @@ class Field
                     break;
             }
 
-            // Проверим поле: если наш корабль туда помещается - ставим $success = true
+            // check field cells: if ship fit to it, then $success = true
             if ($this->checkCellsAroundForAvailability($field, $f)) {
                 $this->setShipCellsToField($field, $f);
                 $success = true;
@@ -160,7 +160,7 @@ class Field
                     break;
             }
 
-            // Проверим поле: если наш корабль туда помещается - ставим $success = true
+            // check field cells: if ship fit to it, then $success = true
             if ($this->checkCellsAroundForAvailability($field, $f)) {
                 $this->setShipCellsToField($field, $f);
                 $success = true;
@@ -181,7 +181,7 @@ class Field
                 $f[$y][$x] = self::CELL_SHIP;
             }
 
-            // Проверим поле: если наш корабль туда помещается - ставим $success = true
+            // check field cells: if ship fit to it, then $success = true
             if ($this->checkCellsAroundForAvailability($field, $f)) {
                 $this->setShipCellsToField($field, $f);
                 $success = true;
@@ -190,7 +190,7 @@ class Field
     }
 
     /**
-     * Размечаем на поле все свободные клетки около корабля как недоступные
+     * Check cells is nearest to ship as unavailable
      * @param array $field
      * @param array $ship
      * @return bool
@@ -214,7 +214,7 @@ class Field
     }
 
     /**
-     * Ставим корабль на поле и размечаем свободные клетки около корабля как недоступные
+     * Place ship to field and mark nearest cells as unavailable
      * @param array $field
      * @param array $ship
      */
@@ -264,6 +264,11 @@ class Field
         return $this->field[$rowNum][$colNum];
     }
 
+    /**
+     * @param int $rowNum
+     * @param int $colNum
+     * @param int $value
+     */
     public function setCellValue(int $rowNum, int $colNum, int $value) : void
     {
         if (!in_array($value, self::ALLOWED_CELL_VALUES)) {
@@ -281,7 +286,7 @@ class Field
     }
 
     /**
-     * Возвращает количество клеток кораблей, оставшихся не подбитыми
+     * Returns count of left ship cells
      * @return int
      */
     public function getLeftShipCellsCount() : int
@@ -290,6 +295,10 @@ class Field
     }
 
 
+    /**
+     * Debug field dump
+     * @param $field
+     */
     public function debugDumpField($field) : void
     {
         echo "<pre>";

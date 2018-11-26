@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Models\Field;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class HomeController extends Controller
 {
@@ -17,7 +18,7 @@ class HomeController extends Controller
         $this->container = $container;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $field = session('field') ?? $this->container->make(Field::class);
 
@@ -28,6 +29,7 @@ class HomeController extends Controller
 
         return view('home.index', [
             'field' => $field,
+            'debug' => (bool) $request->get('debug', false),
         ]);
     }
 
@@ -59,7 +61,7 @@ class HomeController extends Controller
         }
 
         return JsonResponse::create([
-            'hit'  => $isHit,
+            'hit' => $isHit,
             'cellsLeft' => $field->getLeftShipCellsCount(),
         ]);
     }
