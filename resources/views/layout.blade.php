@@ -14,7 +14,7 @@
             padding: 0;
             margin-left: -6px;
             display: inline-block;
-            width: 30px;
+            width: 29px; /** 30->29 fix to firefox borders render */
             height: 30px;
             border: 1px solid #ccc;
             border-collapse: collapse;
