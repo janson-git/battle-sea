@@ -20,3 +20,7 @@ Route::get('/hit/{rowNum}/{colNum}', [
     'uses' => 'HomeController@hit',
 
 ]);
+
+Route::get('/test', [
+    'uses' => 'HomeController@test',
+]);

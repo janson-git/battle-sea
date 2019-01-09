@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Field;
+use App\Models\PushPackage\PushMessage;
+use App\Services\PushMessageService;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -64,5 +66,14 @@ class HomeController extends Controller
             'hit' => $isHit,
             'cellsLeft' => $field->getLeftShipCellsCount(),
         ]);
+    }
+
+    public function test(Request $request)
+    {
+        $message = new PushMessage('test', ['title' => 'New Post!']);
+
+        /** @var PushMessageService $pushService */
+        $pushService = $this->container->get(PushMessageService::class);
+        $pushService->sendToUsers('333222111', $message);
     }
 }

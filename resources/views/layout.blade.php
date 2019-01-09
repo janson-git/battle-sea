@@ -167,4 +167,22 @@
     }
   });
 </script>
+
+    <script type="text/javascript" src="/js/autobahn.js"></script>
+    <script>
+        // TODO: При коннекте добавляем user id в виде /{user_id} - это будет наш ID пользователя/сесии
+      var conn = new ab.Session('ws://localhost:8081/333222111',
+        function() {
+          conn.subscribe('test', function(topic, data) {
+            // This is where you would add the new article to the DOM (beyond the scope of this tutorial)
+            console.log('New article published to category "' + topic + '" : ' + data.data);
+            console.log(data);
+          });
+        },
+        function() {
+          console.warn('WebSocket connection closed');
+        },
+        {'skipSubprotocolCheck': true}
+      );
+    </script>
 </body>
