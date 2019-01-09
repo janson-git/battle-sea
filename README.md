@@ -1,6 +1,8 @@
 # battle-sea
 
-#####Note:
+![Screenshot](./battle-sea-screen.png)
+
+##### Note:
 
 Laravel 5.6 used to route and organize controllers code.
 
@@ -21,12 +23,12 @@ Configuration of usual JS stack (react, redux with actions, reducers e.t.c.) is 
 
 Needed JS functions is very simple, it takes only a few lines of code and not require any libraries or frameworks.
 
-####Requirements:
+#### Requirements:
 - php7.2-fpm (on 9000 port listen in my case)
 - chrome or firefox browser
 - nginx or apache web-server
 
-####Nginx localhost server configuration to php-fpm listen on port 9000
+#### Nginx localhost server configuration to php-fpm listen on port 9000
 
 file _/etc/nginx/sites-enabled/localhost_
 ```text
