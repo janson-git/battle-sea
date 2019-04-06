@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Models\PushPackage;
+namespace App\Models\Message;
 
 
 class PushPackage
@@ -10,15 +10,15 @@ class PushPackage
 
     /** @var array */
     private $receivers;
-    /** @var PushMessage */
+    /** @var Message */
     private $message;
 
     /**
      * PushPackage constructor.
      * @param string|array $receiver
-     * @param PushMessage $message
+     * @param Message $message
      */
-    public function __construct(PushMessage $message, $receiver = [])
+    public function __construct(Message $message, $receiver = [])
     {
         if (!is_array($receiver)) {
             $receiver = [$receiver];

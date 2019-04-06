@@ -103,74 +103,10 @@
         </div>
     </div>
 
-<script>
-  //////////////////////////////////////////////////
-  //////////////// FUNCTIONS ///////////////////////
-
-  function openGameOverPopup() {
-    $('#popup-game-over').style.display = 'block';
-  }
-  function closeGameOverPopup() {
-    $('#popup-game-over').style.display = 'none';
-  }
-
-  function sendHit(rowNum, colNum, cb) {
-    const xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-      if (parseInt(xhr.readyState) !== 4) {
-        return;
-      }
-
-      cb(xhr.responseText);
-    };
-
-    xhr.open('GET', '/hit/' + rowNum + '/' + colNum, true);
-    xhr.send();
-  }
-
-  //////////////////////////////////////////////////////
-  //////////////// EVENT LISTENERS /////////////////////
-
-  // close button clicked
-  addEventListener('click', function(e) {
-    if (e.target.className.indexOf('close') !== -1) {
-      closeGameOverPopup();
-    }
-  });
-
-  // restart game button handler
-  addEventListener('click', function(e) {
-    if (e.target.className.indexOf('restart-game') !== -1) {
-      window.location.href = '/';
-    }
-  });
-
-  // clicked on empty cell
-  addEventListener('click', function(e) {
-    var node = e.target;
-    if (node.className.indexOf('cell-empty') !== -1) {
-      var rowNum = node.attributes['data-row'].value;
-      var colNum = node.attributes['data-col'].value;
-
-      sendHit(rowNum, colNum, function (responseText) {
-        var json = JSON.parse(responseText);
-        var isHit = json.hit;
-        var left = json.cellsLeft;
-
-        var cell = $('#cell-' + rowNum + '-' + colNum);
-        cell.className = cell.className.replace('cell-empty', isHit ? 'cell-hit' : 'cell-miss');
-
-        if (left < 1) {
-          openGameOverPopup();
-        }
-      });
-    }
-  });
-</script>
 
     <script type="text/javascript" src="/js/autobahn.js"></script>
     <script>
-        // TODO: При коннекте добавляем user id в виде /{user_id} - это будет наш ID пользователя/сесии
+        // При коннекте добавляем user id в виде /{user_id} - это будет наш ID пользователя/сесии
       var conn = new ab.Session('ws://localhost:8081/{{ $userId }}',
         function() {
           // this is method mean 'onSubscribe': for example of subscribe messages receive on client
@@ -185,5 +121,88 @@
         },
         {'skipSubprotocolCheck': true}
       );
+    </script>
+
+
+    <script>
+      //////////////////////////////////////////////////
+      //////////////// FUNCTIONS ///////////////////////
+
+      function openGameOverPopup() {
+        $('#popup-game-over').style.display = 'block';
+      }
+      function closeGameOverPopup() {
+        $('#popup-game-over').style.display = 'none';
+      }
+
+      function sendHit(rowNum, colNum, cb) {
+
+        // пока отправка по сокетам работает в режиме опробирования
+        var payload = {
+          "message": {
+            "type": "hit",
+            "data": {
+              "row": rowNum,
+              "col": colNum
+            }
+          }
+        };
+
+        console.log(conn, payload);
+        conn.publish('gameEvent', payload);
+
+        ///////////////////////////
+
+        const xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+          if (parseInt(xhr.readyState) !== 4) {
+            return;
+          }
+
+          cb(xhr.responseText);
+        };
+
+        xhr.open('GET', '/hit/' + rowNum + '/' + colNum, true);
+        xhr.send();
+      }
+
+      //////////////////////////////////////////////////////
+      //////////////// EVENT LISTENERS /////////////////////
+
+      // close button clicked
+      addEventListener('click', function(e) {
+        if (e.target.className.indexOf('close') !== -1) {
+          closeGameOverPopup();
+        }
+      });
+
+      // restart game button handler
+      addEventListener('click', function(e) {
+        if (e.target.className.indexOf('restart-game') !== -1) {
+          window.location.href = '/';
+        }
+      });
+
+      // clicked on empty cell
+      addEventListener('click', function(e) {
+        var node = e.target;
+        if (node.className.indexOf('cell-empty') !== -1) {
+          var rowNum = node.attributes['data-row'].value;
+          var colNum = node.attributes['data-col'].value;
+
+          sendHit(rowNum, colNum, function (responseText) {
+            var json = JSON.parse(responseText);
+            var isHit = json.hit;
+            var left = json.cellsLeft;
+
+            var cell = $('#cell-' + rowNum + '-' + colNum);
+            cell.className = cell.className.replace('cell-empty', isHit ? 'cell-hit' : 'cell-miss');
+
+            if (left < 1) {
+              openGameOverPopup();
+            }
+          });
+        }
+      });
     </script>
 </body>

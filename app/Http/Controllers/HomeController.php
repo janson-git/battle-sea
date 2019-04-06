@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Field;
-use App\Models\PushPackage\PushMessage;
+use App\Models\Message\Message;
 use App\Services\PushMessageService;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Http\JsonResponse;
@@ -75,7 +75,7 @@ class HomeController extends Controller
 
     public function test(Request $request)
     {
-        $message = new PushMessage('test', ['title' => 'New Post!']);
+        $message = new Message('test', ['title' => 'New Post!']);
 
         /** @var PushMessageService $pushService */
         $pushService = $this->container->get(PushMessageService::class);

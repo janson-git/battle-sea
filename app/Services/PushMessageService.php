@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\PushPackage\PushMessage;
-use App\Models\PushPackage\PushPackage;
+use App\Models\Message\Message;
+use App\Models\Message\PushPackage;
 
 /**
  * Class PushMessageService
@@ -21,20 +21,20 @@ class PushMessageService
 
     /**
      * @param string|array $userIds
-     * @param PushMessage $message
+     * @param Message $message
      * @throws \ZMQSocketException
      */
-    public function sendToUsers($userIds, PushMessage $message) : void
+    public function sendToUsers($userIds, Message $message) : void
     {
         $package = new PushPackage($message, $userIds);
         $this->socket->send($package);
     }
 
     /**
-     * @param PushMessage $message
+     * @param Message $message
      * @throws \ZMQSocketException
      */
-    public function sendToAllUsers(PushMessage $message) : void
+    public function sendToAllUsers(Message $message) : void
     {
         $package = new PushPackage($message, PushPackage::SEND_TO_ALL);
         $this->socket->send($package);

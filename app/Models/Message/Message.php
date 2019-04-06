@@ -1,10 +1,10 @@
 <?php
 
 
-namespace App\Models\PushPackage;
+namespace App\Models\Message;
 
 
-class PushMessage
+class Message
 {
     private $type;
     private $data;

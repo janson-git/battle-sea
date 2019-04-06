@@ -31,8 +31,6 @@ class AppServiceProvider extends ServiceProvider
         $socket = $context->getSocket(\ZMQ::SOCKET_PUSH, 'toClient');
         $pushSocket = $socket->connect($pushDsn);
 
-        var_dump($pushSocket->getEndpoints());
-
         $this->app->instance(PushMessageService::class, new PushMessageService($pushSocket));
     }
 }
