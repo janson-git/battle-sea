@@ -2,6 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\PlayerShotJob;
+use App\Models\Message\PullPackage;
+use App\Services\PullMessageService;
 use Illuminate\Console\Command;
 
 class PullMessagesListener extends Command
@@ -21,7 +24,7 @@ class PullMessagesListener extends Command
     protected $description = 'Command description';
 
     protected $messageTypeToJobMap = [
-        'hit'          => 'BattleHitJob',
+        'shot'         => PlayerShotJob::class,
         'cancelBattle' => 'BattleCancelJob'
     ];
 
@@ -42,6 +45,7 @@ class PullMessagesListener extends Command
      */
     public function handle()
     {
+        $pullMessageService = $this->laravel->make(PullMessageService::class);
         $pullDsn = config('zmq.incoming');
 
         echo $pullDsn . "\n";
@@ -56,29 +60,26 @@ class PullMessagesListener extends Command
             if ($socketMessages !== false) {
                 echo "PARSE AND HANDLE NEEDED!\n";
                 foreach ($socketMessages as $socketMessage) {
-                    $decodedMessage = json_decode($socketMessage, true);
-
-                    $topic = $decodedMessage['topic'] ?? null;
-                    $event = $decodedMessage['event'] ?? null;
-                    if ($event === null && !array_key_exists('message', $event)) {
-                        echo "Wrong socket event received: {$socketMessage}";
+                    $pullPackage = $pullMessageService->getPullPackageFromJson($socketMessage);
+                    if (!$pullPackage instanceof PullPackage) {
+                        echo 'Wrong payload received from socket or some payload fields missed: ' . json_encode($socketMessage);
                         continue;
                     }
 
-                    $message = $event['message'];
-                    $type = $message['type'] ?? null;
-                    $data = $message['data'] ?? null;
-
-                    if ($type === null || $data === null) {
-                        echo "Wrong event message received: {$socketMessage}";
-                        continue;
-                    }
-
-                    // TODO: route by message!
-                    // TODO: по $this->messageTypeToJobMap - инициализировать нужный MessageJob,
-                    // TODO:    и его запускать через dispatch/dispath_now с данными сообщения
+                    // route by message!
+                    // по $this->messageTypeToJobMap - инициализировать нужный MessageJob,
+                    //     и его запускать через dispatch/dispath_now с данными сообщения
                     // TODO: в самом Job - обработка и ответ отправителю/получателю через PushMessageService
 
+                    $message = $pullPackage->getMessage();
+                    $messageType = $message->getType();
+
+                    $job = null;
+                    if (array_key_exists($messageType, $this->messageTypeToJobMap)) {
+                        dispatch_now(
+                            new $this->messageTypeToJobMap[$messageType]($pullPackage)
+                        );
+                    }
                 }
                 echo json_encode($socketMessages) . "\n";
             }

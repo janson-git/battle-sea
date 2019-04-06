@@ -140,7 +140,7 @@
         // пока отправка по сокетам работает в режиме опробирования
         var payload = {
           "message": {
-            "type": "hit",
+            "type": "shot",
             "data": {
               "row": rowNum,
               "col": colNum
