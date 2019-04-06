@@ -22,6 +22,10 @@ class HomeController extends Controller
 
     public function index(Request $request)
     {
+        // Получим или назначим пользователю какой-то ID
+        $userId = $request->getSession()->get('userId') ?? uniqid('u', false);
+        session()->put('userId', $userId);
+
         $field = session('field') ?? $this->container->make(Field::class);
 
         $field->reset();
@@ -31,6 +35,7 @@ class HomeController extends Controller
 
         return view('home.index', [
             'field' => $field,
+            'userId' => $userId,
             'debug' => (bool) $request->get('debug', false),
         ]);
     }
@@ -74,6 +79,6 @@ class HomeController extends Controller
 
         /** @var PushMessageService $pushService */
         $pushService = $this->container->get(PushMessageService::class);
-        $pushService->sendToUsers('333222111', $message);
+        $pushService->sendToUsers('u5ca71436030ed', $message);
     }
 }

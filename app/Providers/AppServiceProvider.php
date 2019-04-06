@@ -25,11 +25,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        // TODO: конфиг сервиса вынести в конфиг
-        $context = new \ZMQContext();
-        $socket = $context->getSocket(\ZMQ::SOCKET_PUSH, 'my pusher');
-        $socket->connect("tcp://localhost:5555");
+        $pushDsn = config('zmq.outgoing');
 
-        $this->app->instance(PushMessageService::class, new PushMessageService($socket));
+        $context = new \ZMQContext();
+        $socket = $context->getSocket(\ZMQ::SOCKET_PUSH, 'toClient');
+        $pushSocket = $socket->connect($pushDsn);
+
+        var_dump($pushSocket->getEndpoints());
+
+        $this->app->instance(PushMessageService::class, new PushMessageService($pushSocket));
     }
 }
