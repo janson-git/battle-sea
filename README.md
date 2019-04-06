@@ -4,6 +4,8 @@
 
 ##### Note:
 
+**Look to docs/README.md for start instructions!**
+
 Laravel 5.6 used to route and organize controllers code.
 
 Application use session storage to keep generated game field while playing game.
